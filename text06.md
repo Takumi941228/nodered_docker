@@ -59,4 +59,4 @@
 
 `デプロイ` ボタンをクリックしノードを有効化する
 
-以下のURL<http://:8080/worldmap>にアクセスする。
+以下のURL<http://localhost:8080/worldmap>にアクセスする。

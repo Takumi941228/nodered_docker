@@ -46,7 +46,7 @@
 
 `デプロイ` ボタンをクリックしノードを有効化する
 
-以下のURL<http://:8080/currentclock>にアクセスする。
+以下のURL<http://localhost:8080/currentclock>にアクセスする。
 
 
 ### （課題）URLやHTMLを変更してみよう
