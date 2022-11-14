@@ -1,0 +1,22 @@
+#ファイルのバージョン
+version: '3.7'
+
+services:
+  #サービス名
+  nodered:
+    #作成するイメージ名
+    image: nodered/node-red:latest
+    #作成するコンテナ名
+    container_name: mynodered
+    #ホスト側にフォルダ名:backup_dataを作成し、noderedコンテナ内のフォルダ名:dataとマウント 
+    volumes:
+      - ./backup_data:/data
+    #ポートの解放
+    expose:
+      - 1880
+      - 1883
+    #ポートフォワード
+    ports:
+      - "8080:1880"
+      - "1883:1883"
+
