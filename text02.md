@@ -49,4 +49,4 @@
 以下のURL<http://localhost:8080/currentclock>にアクセスする。
 
 
-### （課題）URLやHTMLを変更してみよう
+## （課題）URLやHTMLを変更して表示してみよう
