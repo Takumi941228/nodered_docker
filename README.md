@@ -22,7 +22,7 @@ docker-compose up -d
 docker-compose down
 ```
 
-## Node-Redの画面構成
+### Node-Redの画面構成
 
 <center>
   <img src="./images/node-red-capture.png" width="80%">
