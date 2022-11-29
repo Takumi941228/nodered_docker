@@ -10,17 +10,9 @@
     <img src="./images/mqtt-4.png" width="80%">
 </center>
 
-### MQTT Subscribe
-
-MQTTサーバからの情報を処理する．Subscriberの機能を実装することでサーバーからの要求に応じたデバイスの処理を行うことができます．
-
 ### Subscriberへの通知
 
-`mqtt out` ノードを配置して，トピックに `deviceXX/status` と入力します．このノードに `indject` ノードを接続します．`inject` ノードのpayload は`json` として，それぞれに，status: 1 to 3 を入力します．
-
-### Subscriberの機能追加
-
-トピック  `device01/status` へ 0から3のstatusコードに応じてデバイス(ESP32)に接続したLEDの点灯を制御します。
+`mqtt out` ノードを配置して，トピックに `deviceXX/status` と入力します．このノードに `indject` ノードを接続します．`inject` ノードのpayload は`json` として，それぞれに，status: 1 to 3 を入力します.今回は、Node-RED側がPublisherとなり、トピック  `device01/status` として、0から3のstatusコードに応じてデバイス(ESP32)に接続したLEDの点灯を制御します。
 
 ### ダッシュボードの例
 

@@ -34,6 +34,10 @@ MQTT(Message Queue Telemetry Transport)とは、「ブローカ」と呼ばれ�
   <img src="./images/mqtt-1.png" width="80%">
 </center>
 
+### MQTT Subscribe
+
+MQTTサーバからの情報を処理する．Subscriberの機能を実装することでサーバーからの要求に応じたデバイスのデータ処理を行うことができます
+
 ### ダッシュボードの例
 
 次の図は，ESP32 より送信した データをゲージ表示したものである。
@@ -53,7 +57,9 @@ MQTT(Message Queue Telemetry Transport)とは、「ブローカ」と呼ばれ�
       - 画像では，`device01/bme`となっている。
 
 - function
+
   - コード
+  
   ```js
   msg.payload = msg.payload.temp;
   return msg;
