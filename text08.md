@@ -1,6 +1,6 @@
 # Node-REDを活用したIoT実習
 
-## MQTTを使う
+## MQTTを使って制御する
 
 ### データフロー
 
@@ -12,7 +12,7 @@
 
 ### Subscriberへの通知
 
-`mqtt out` ノードを配置して，トピックに `deviceXX/status` と入力します．このノードに `indject` ノードを接続します．`inject` ノードのpayload は`json` として，それぞれに，status: 1 to 3 を入力します.今回は、Node-RED側がPublisherとなり、トピック  `device01/status` として、0から3のstatusコードに応じてデバイス(ESP32)に接続したLEDの点灯を制御します。
+`mqtt out` ノードを配置して，トピックに `deviceXX/status` と入力します．このノードに `indject` ノードを接続します．`inject` ノードのpayload は`json` として，それぞれに，{"status": 1 } to 3 を入力します.今回は、Node-RED側がPublisherとなり、トピック  `device01/status` として、0から3のstatusコードに応じてデバイス(ESP32)に接続したLEDの点灯を制御します。
 
 ### ダッシュボードの例
 
@@ -25,23 +25,32 @@
 ### 各ノードの設置内容は以下
 
 - MQTT Broker
-    - デフォルト
+  - デフォルト
 
 - mqtt out
-    - server:`localhost:1883`
-    - topic:`deviceXX/status`
-      - 画像では，`device01/status`となっている。
+
+  msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として、ブローカにパブリッシュする。
+
+  - server:`localhost:1883`
+  - topic:`deviceXX/status`
+  - 画像では，`device01/status`となっている。
 
 - inject
-    ```json
-    {"status": 1}
-    ```
+  
+  msgオブジェクトの構造の`payload`に、JSONデータをinjectノードで生成する。キーには、`status`、値には、`1`を入れる。また、今後LEDを様々な制御するために、`2`や`3`といった適当な値を入れること。
+
+  ```json
+  {"status": 1}
+  ```
 
 - button
     - Tab：` IoTシステム `
     - グループ：` LED `
 
 - function
+
+  ダッシュボードをボタンをクリックすると、同様にmsgオブジェクトの構造の`payload`に、JSON形式のデータを代入することで、injectノードと同じ仕組みを構成する。
+
   ```js
   msg.payload = {"status":1}
   return msg;
@@ -82,20 +91,34 @@
 BME280 bme;
 BME280_SensorMeasurements measurements;
 
-// MQTT Subscribe
+/* MQTT Subscribe */
+// JSONのオブジェクトを点灯、消灯、点滅および余分に4つの項目のため作成
 const int request_capacity = JSON_OBJECT_SIZE(4);
+
+// 静的にJSONデータを生成するためにメモリを確保
 StaticJsonDocument<request_capacity> json_request;
 
-// MQTT用インスタンス作成
+/* MQTT用インスタンス作成 */
+// WiFiClientのクラスからこのプログラムで実際に利用するWiFiClientのオブジェクトをespClientとして作成
 WiFiClient espClient;
+
+// Clientからブローカへの通信を行うPublish、ブローカへデータの受信を要求するSubscribeの処理などの、MQTTの通信を行うためのPubsubClientのクラスから実際に処理を行うオブジェクトclientを作成
 PubSubClient client(espClient);
 
-// LEDステータス
+// LEDステータス用のlong型変数led_statusを初期値0に指定
 unsigned long led_status = 0;
 
-// MQTT Subscribeのコールバック
+/* MQTT Subscribeのコールバック */
+// 受信データを示すtopic、payload、lengthの3項目が呼び出される関数に引数として渡される。
+// 受信データの処理をこのCallback関数の中にユーザが記述
+/*
+topic　：　デバイス間の通信データの識別を行うための階層構造を識別するデータ
+payload ：　ブロッカから送られたメッセージ・データ
+length　：　メッセージ長
+*/
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
 
+  // 文字列のpayloadの中身をJSONオブジェクトであるjson_requestにデシリアライズ化（JSON化）
   DeserializationError err = deserializeJson(json_request, payload, length);
   if (err) {
     Serial.println("Deserialize error");
@@ -103,9 +126,11 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     return;
   }
 
+  // 
   serializeJson(json_request, Serial);
   Serial.println("");
 
+  // JSONデータのキーstatusの値をled_statusに代入
   led_status = json_request["status"];
 }
 
@@ -124,10 +149,12 @@ void setupWiFi() {
   // sync Time
   configTime(3600L * 9, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
 
-  // MQTTブローカに接続
+  /* MQTTブローカに接続 */
+  // インスタント化したオブジェクトclientの接続先のサーバを、アドレスとポート番号を設定
   client.setServer(MQTT_SERVER, MQTT_PORT);
 
-  // MQTT subscribeの設定
+  /* MQTT subscribeの設定 */
+  // Clientは、ブローカ（サーバ）からのメッセージを受信するとmqttCallback関数を呼び出す
   client.setCallback(mqttCallback);
 }
 
@@ -153,16 +180,10 @@ void loop() {
 
   switch (led_status) {
     case 0:
-      //
-      break;
-    case 1:
       // LED ON
       break;
-    case 2:
+    case 1:
       // LED OFF
-      break;
-    case 3:
-      // LED Blink
       break;
     default:
       break;
@@ -172,4 +193,5 @@ void loop() {
 
 Node-RED のFlowをデプロイします． `inject` ノード及びダッシュボードのボタンをクリックしてESP32のLEDの点灯することを確認する。
 
-## （課題）LEDをPWM制御したり、LED以外の物を操作してみよう。例:サーボモータ等
+## （課題）LEDを点滅させたりPWM制御したり、LEDの数を増やしたりしてみよう。
+

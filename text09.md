@@ -178,14 +178,6 @@ void sendSensorData(void) {
   Serial.print(measurements.pressure / 100, 2);
   Serial.print(",");
   Serial.println(measurements.temperature, 2);
-
-  // ペイロードを作成して送信を行う．
-  json_message.clear();
-  json_message["humid"] = measurements.humidity;
-  json_message["press"] = measurements.pressure / 100;
-  json_message["temp"] = measurements.temperature;
-  serializeJson(json_message, message_buffer, sizeof(message_buffer));
-  client.publish(TOPIC, message_buffer);
 }
 
 void setup() {
@@ -214,6 +206,15 @@ void loop() {
       break;
     }
   }
+
+  // ペイロードを作成して送信を行う．
+  json_message.clear();
+  json_message["humid"] = measurements.humidity;
+  json_message["press"] = measurements.pressure / 100;
+  json_message["temp"] = measurements.temperature;
+  serializeJson(json_message, message_buffer, sizeof(message_buffer));
+  client.publish(TOPIC, message_buffer);
+  delay(5000);
 }
 ```
 

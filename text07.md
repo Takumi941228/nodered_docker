@@ -1,6 +1,6 @@
 # Node-REDを活用したIoT実習
 
-## MQTTを使う
+## MQTTを使ってデータを取得
 
 ### MQTTとは
 
@@ -28,7 +28,7 @@ MQTT(Message Queue Telemetry Transport)とは、「ブローカ」と呼ばれ�
 
 ### MQTTの通信の仕組み
 
-今回はTopicを `[device_id]/bme` とし，ESP32がpublisherとなりデータの送信を行い，node-red側のsubcriberノードを用いてデータの取得を行う．
+MQTT の手順で、Wi-Fiなどのネットワーク通信を用いてESP32とPC間の通信を行います。データを送信するデバイスは、ブローカと呼ばれるサーバにデータの種類を示す`topic`などと共に短い送信データを送ります。サーバは、`topic`を指定することで、受信を要望するデバイスにサーバで受信したデータのうち、要求に該当するデータを要求してきたデバイスに送信します。今回はTopicを `[device_id]/bme` とし，ESP32がpublisherとなりデータの送信を行い，node-red側のsubcriberノードを用いてデータの取得を行う．
 
 <center>
   <img src="./images/mqtt-1.png" width="80%">
@@ -58,8 +58,10 @@ MQTTサーバからの情報を処理する．Subscriberの機能を実装する
 
 - function
 
-  - コード
+  Fuctionノードでは、msg.payloadの構造から、JSONのキーをそれぞれ`.ドット`でtemp(humid,press)を指定して、値を取り出し、`payload`に代入している。
   
+  - コード
+
   ```js
   msg.payload = msg.payload.temp;
   return msg;
@@ -76,6 +78,9 @@ MQTTサーバからの情報を処理する．Subscriberの機能を実装する
   ```
 
 - gauge
+
+  Gaugeノードは、`msg.payload`の値を簡単にゲージ表示してくれる。
+
     - Tab：` IoTシステム `
     - グループ：` 温湿度・気圧 `
     - Lavel：` 温度（または湿度、気圧） `
@@ -148,6 +153,7 @@ Arduino IDE内の環境設定における追加ボードマネージャに記述
 以下のコードは，MQTTブローカへBME280センサで取得したデータを送信します．
 
 ```c
+// ライブラリをインクルード
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <SparkFunBME280.h>
@@ -177,13 +183,21 @@ BME280_SensorMeasurements measurements;
 #include <Ticker.h>
 Ticker tickerMeasure;
 
-// MQTT Publish
+/* MQTT Publish */
+// JSONのオブジェクトを温度、湿度、気圧用に3つの項目のため作成
 const int message_capacity = JSON_OBJECT_SIZE(3);
+
+// 静的にJSONデータを生成するためにメモリを確保
 StaticJsonDocument<message_capacity> json_message;
+
+// JSONデータを格納する文字型配列のサイズを128に設定
 char message_buffer[MQTT_BUFFER_SIZE];
 
-// MQTT用インスタンス作成
+/* MQTT用インスタンス作成 */
+// WiFiClientのクラスからこのプログラムで実際に利用するWiFiClientのオブジェクトをespClientとして作成
 WiFiClient espClient;
+
+// Clientからブローカへの通信を行うPublish、ブローカへデータの受信を要求するSubscribeの処理などの、MQTTの通信を行うためのPubsubClientのクラスから実際に処理を行うオブジェクトclientを作成
 PubSubClient client(espClient);
 
 
@@ -202,10 +216,11 @@ void setupWiFi() {
   // sync Time
   configTime( 3600L * 9, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
 
-  // MQTTブローカに接続
+  /* MQTTブローカに接続 */
+  // インスタント化したオブジェクトclientの接続先のサーバを、アドレスとポート番号を設定
   client.setServer(MQTT_SERVER, MQTT_PORT);
 
-  // 1sごとにセンサデータを送信する
+  // 1sごとにセンサデータを取得
   tickerMeasure.attach_ms(1000, sendSensorData);
 
 }
@@ -213,20 +228,14 @@ void setupWiFi() {
 void sendSensorData(void) {
   //センサからデータの取得
   bme.readAllMeasurements(&measurements);
+
+  // シリアルモニタにセンサデータを表示
   Serial.println("Humidity,Pressure,BME-Temp");
   Serial.print(measurements.humidity, 0);
   Serial.print(",");
   Serial.print(measurements.pressure / 100, 2);
   Serial.print(",");
   Serial.println(measurements.temperature, 2);
-
-  // ペイロードを作成して送信を行う．
-  json_message.clear();
-  json_message["humid"] = measurements.humidity;
-  json_message["press"] = measurements.pressure / 100;
-  json_message["temp"] = measurements.temperature;
-  serializeJson(json_message, message_buffer, sizeof(message_buffer));
-  client.publish(TOPIC, message_buffer);
 }
 
 void setup() {
@@ -255,6 +264,22 @@ void loop() {
       break;
     }
   }
+
+  /* ペイロードを作成して送信を行う．*/
+  // JSONデータをクリア
+  json_message.clear();
+
+  // JSONの項目をキーと値を添えてJSONを作成
+  json_message["humid"] = measurements.humidity;
+  json_message["press"] = measurements.pressure / 100;
+  json_message["temp"] = measurements.temperature;
+
+  // json_messageの中のJSONデータをJSON形式の文字列message_bufferとしてシリアライズ化（文字列に変換）
+  serializeJson(json_message, message_buffer, sizeof(message_buffer));
+
+  // トピックをdevicexx/bmeして、JSON形式の文字列をパブリッシュする
+  client.publish(TOPIC, message_buffer);
+  delay(5000);
 }
 ```
 
@@ -263,5 +288,19 @@ void loop() {
 `デプロイ` ボタンをクリックしノードを有効化する
 
 以下のURL<http://localhost:8080/ui>にアクセスする。
+
+## メッセージオブジェクトの構成
+
+MQTT inノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると以下のような構成になっている。`topic`には、`"devicexx/bmm"`という文字型データ、`payload`には、`{}`で囲まれたJSONデータで構成されている。
+
+```json
+{"topic":"device01/bme","payload":{"humid":50.56835938,"press":996.303772,"temp":20.84000015},"qos":0,"retain":false,"_topic":"device01/bme","_msgid":"ac4977df34d2bc31"}
+```
+
+さらに、Fuctionノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると、`msg.payload`の中身が、Tempデータのみになっていることが確認できる。
+
+```json
+{"topic":"device01/bme","payload":20.84000015,"qos":0,"retain":false,"_topic":"device01/bme","_msgid":"4590e7ca5b4b7834"}
+```
 
 ## （課題）３つのデータをチャートでも表示してみよう
