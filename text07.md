@@ -46,7 +46,9 @@ MQTTサーバからの情報を処理する．Subscriberの機能を実装する
     <img src="./images/mqtt-2.png" width="80%">
 </center>
 
-### 各ノードの設置内容は以下
+## フローの構築
+
+各ノードの設置内容は以下
 
 - MQTT Broker
     - デフォルト
@@ -89,6 +91,9 @@ MQTTサーバからの情報を処理する．Subscriberの機能を実装する
     - デフォルト
 
 ### `デプロイ` ボタンをクリックしノードを有効化する
+
+
+## ESP32の構築
 
 ### BME280センサデータの取得
 
@@ -152,7 +157,7 @@ Arduino IDE内の環境設定における追加ボードマネージャに記述
 
 以下のコードは，MQTTブローカへBME280センサで取得したデータを送信します．
 
-```c
+```c++
 // ライブラリをインクルード
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
@@ -200,7 +205,6 @@ WiFiClient espClient;
 // Clientからブローカへの通信を行うPublish、ブローカへデータの受信を要求するSubscribeの処理などの、MQTTの通信を行うためのPubsubClientのクラスから実際に処理を行うオブジェクトclientを作成
 PubSubClient client(espClient);
 
-
 // WiFiへの接続
 void setupWiFi() {
   // connect wifi
@@ -222,7 +226,6 @@ void setupWiFi() {
 
   // 1sごとにセンサデータを取得
   tickerMeasure.attach_ms(1000, sendSensorData);
-
 }
 
 void sendSensorData(void) {
@@ -283,19 +286,25 @@ void loop() {
 }
 ```
 
-プログラムをコンパイル・転送を行い，シリアルモニタで起動を確認する．
+以上のプログラムをコンパイルし、ESP32に転送を行う
 
-`デプロイ` ボタンをクリックしノードを有効化する
+## 動作確認
 
 以下のURL<http://localhost:8080/ui>にアクセスする。
 
-## メッセージオブジェクトの構成
+<center>
+    <img src="./images/mqtt-7.png" width="80%">
+</center>
 
 MQTT inノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると以下のような構成になっている。`topic`には、`"devicexx/bmm"`という文字型データ、`payload`には、`{}`で囲まれたJSONデータで構成されている。
 
 ```json
 {"topic":"device01/bme","payload":{"humid":50.56835938,"press":996.303772,"temp":20.84000015},"qos":0,"retain":false,"_topic":"device01/bme","_msgid":"ac4977df34d2bc31"}
 ```
+
+<center>
+    <img src="./images/mqtt-8.png" width="80%">
+</center>
 
 さらに、Fuctionノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると、`msg.payload`の中身が、Tempデータのみになっていることが確認できる。
 

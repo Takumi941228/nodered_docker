@@ -22,7 +22,9 @@
     <img src="./images/mqtt-5.png" width="80%">
 </center>
 
-### 各ノードの設置内容は以下
+## フローの構築
+
+各ノードの設置内容は以下
 
 - MQTT Broker
   - デフォルト
@@ -43,6 +45,12 @@
   {"status": 1}
   ```
 
+  JSONデータをdebugノードで、msgオブジェクトの全体を表示すると以下のようになる。`mag.payload`には、`{"status":0}`となっている。
+
+  ```js
+  {"_msgid":"3fab140f4d257d65","payload":{"status":0}}
+  ```
+
 - button
     - Tab：` IoTシステム `
     - グループ：` LED `
@@ -61,11 +69,13 @@
   
 ### `デプロイ` ボタンをクリックしノードを有効化する
 
-### Arduino code
+## ESP32の構築
+### ESP32をSubscriberとして、JSONデータを取得する
 
-次のコードからLEDの点灯プログラムを入力します。
+次のコードからLEDの点灯プログラムを入力します。JSONデータ構造には、`0`や`1`などの数値が値としてあり、それを`led_status`というグローバル変数にて、`switch文`でLEDの制御パターンを分岐する。
 
-```c
+```c++
+// ライブラリをインクルード
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <SparkFunBME280.h>
@@ -79,7 +89,7 @@
 #define WIFI_PASSWORD "PASSWORD"
 
 // MQTT config
-#define MQTT_SERVER "PCのIPアドレス"
+#define MQTT_SERVER "node-redサーバのIPアドレス"
 #define MQTT_PORT 1883
 #define MQTT_BUFFER_SIZE 128
 #define TOPIC_STATUS "deviceXX/status"
@@ -125,10 +135,6 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     Serial.println(err.c_str());
     return;
   }
-
-  // 
-  serializeJson(json_request, Serial);
-  Serial.println("");
 
   // JSONデータのキーstatusの値をled_statusに代入
   led_status = json_request["status"];
@@ -180,10 +186,10 @@ void loop() {
 
   switch (led_status) {
     case 0:
-      // LED ON
+      // LED OFF
       break;
     case 1:
-      // LED OFF
+      // LED ON
       break;
     default:
       break;
@@ -191,7 +197,13 @@ void loop() {
 }
 ```
 
-Node-RED のFlowをデプロイします． `inject` ノード及びダッシュボードのボタンをクリックしてESP32のLEDの点灯することを確認する。
+以上のプログラムをコンパイルし、ESP32に転送を行う
+
+## 動作確認
+
+以下のURL<http://localhost:8080/ui>にアクセスする。
+
+`inject` ノード及びダッシュボードのボタンをクリックしてESP32のLEDの点灯することを確認する。
 
 ## （課題）LEDを点滅させたりPWM制御したり、LEDの数を増やしたりしてみよう。
 

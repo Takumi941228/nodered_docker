@@ -14,7 +14,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
 ### ダッシュボードの例
 
-次の図は，ESP32 より送信した データをAmbientのダッシュボードに表示したものである。
+次の図は，ESP32 より送信した データをAmbientのダッシュボードに表示したものである。左のチャートに温湿度のグラフ、右のチャートに気圧のグラフを表示している。
 
 <center>
     <img src="./images/ambient-1.png" width="80%">
@@ -22,7 +22,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
 ### Ambientの設定
 
-以下のアドレスにアクセス
+以下のアドレスにアクセスし、Ambientのアカウントを作成する。
 
   - <https://ambidata.io/>
 
@@ -106,7 +106,8 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
 以下のコードは，MQTTブローカへBME280センサで取得したデータを送信します．
 
-```c
+```c++
+// ライブラリをインクルード
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <SparkFunBME280.h>
@@ -136,15 +137,22 @@ BME280_SensorMeasurements measurements;
 #include <Ticker.h>
 Ticker tickerMeasure;
 
-// MQTT Publish
+/* MQTT Publish */
+// JSONのオブジェクトを温度、湿度、気圧用に3つの項目のため作成
 const int message_capacity = JSON_OBJECT_SIZE(3);
+
+// 静的にJSONデータを生成するためにメモリを確保
 StaticJsonDocument<message_capacity> json_message;
+
+// JSONデータを格納する文字型配列のサイズを128に設定
 char message_buffer[MQTT_BUFFER_SIZE];
 
-// MQTT用インスタンス作成
+/* MQTT用インスタンス作成 */
+// WiFiClientのクラスからこのプログラムで実際に利用するWiFiClientのオブジェクトをespClientとして作成
 WiFiClient espClient;
-PubSubClient client(espClient);
 
+// Clientからブローカへの通信を行うPublish、ブローカへデータの受信を要求するSubscribeの処理などの、MQTTの通信を行うためのPubsubClientのクラスから実際に処理を行うオブジェクトclientを作成
+PubSubClient client(espClient);
 
 // WiFiへの接続
 void setupWiFi() {
@@ -161,17 +169,19 @@ void setupWiFi() {
   // sync Time
   configTime( 3600L * 9, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
 
-  // MQTTブローカに接続
+  /* MQTTブローカに接続 */
+  // インスタント化したオブジェクトclientの接続先のサーバを、アドレスとポート番号を設定
   client.setServer(MQTT_SERVER, MQTT_PORT);
 
-  // 1sごとにセンサデータを送信する
+  // 1sごとにセンサデータを取得
   tickerMeasure.attach_ms(1000, sendSensorData);
-
 }
 
 void sendSensorData(void) {
   //センサからデータの取得
   bme.readAllMeasurements(&measurements);
+
+  // シリアルモニタにセンサデータを表示
   Serial.println("Humidity,Pressure,BME-Temp");
   Serial.print(measurements.humidity, 0);
   Serial.print(",");
@@ -207,18 +217,30 @@ void loop() {
     }
   }
 
-  // ペイロードを作成して送信を行う．
+  /* ペイロードを作成して送信を行う．*/
+  // JSONデータをクリア
   json_message.clear();
+
+  // JSONの項目をキーと値を添えてJSONを作成
   json_message["humid"] = measurements.humidity;
   json_message["press"] = measurements.pressure / 100;
   json_message["temp"] = measurements.temperature;
+
+  // json_messageの中のJSONデータをJSON形式の文字列message_bufferとしてシリアライズ化（文字列に変換）
   serializeJson(json_message, message_buffer, sizeof(message_buffer));
+
+  // トピックをdevicexx/bmeして、JSON形式の文字列をパブリッシュする
   client.publish(TOPIC, message_buffer);
   delay(5000);
 }
 ```
+### 動作確認
 
 プログラムをコンパイル・転送を行い，シリアルモニタで起動を確認する．
+
+```shell
+{"topic":"device00/bme","payload":{"humid":34.49023438,"press":1002.278992,"temp":25.12999916},"qos":0,"retain":false,"_topic":"device00/bme","_msgid":"dac087ca3ee99498"}
+```
 
 Ambientのダッシュボードにアクセスし、データが送信されていることを確認する。
 
