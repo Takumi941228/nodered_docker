@@ -73,7 +73,9 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
 パレットの管理から，ノードを追加を選択して，`node-red-contrib-ambient` を検索し追加を行う
 
-### 各ノードの設置内容は以下
+## フローの構築
+
+各ノードの設置内容は以下
 
 - MQTT Broker
     - デフォルト
@@ -84,6 +86,9 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
       - 画像では，`device01/bme`となっている。
 
 - function
+
+  msg.payloadのオブジェクトには、`{"temp:xxx", "humid":xxx, "press":xxx}`というJSON形式のデータ構造となっているため、`.(ドット)`でキーを指定することで、値（データ）を参照することができる。ここでは、JSON形式で`{"d1":xxx, "d2":xxx, "d3":xxx}`として変数dataに格納し、その後`msg.payload`に代入している。
+
   ```js
   var data = {
     "d1": msg.payload.temp,
@@ -234,12 +239,26 @@ void loop() {
   delay(5000);
 }
 ```
+
+プログラムをコンパイルし、ESP32に転送を行う
 ### 動作確認
 
-プログラムをコンパイル・転送を行い，シリアルモニタで起動を確認する．
+Arduino IDEのシリアルモニタで起動およびデータ取得の確認する．
 
-```shell
+<center>
+  <img src="./images/ambient-8.png" width="80%">
+</center>
+
+MQTT inノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると以下のような構成になっている。`topic`には、`"devicexx/bmm"`という文字型データ、`payload`には、`{}`で囲まれたJSONデータで構成されている。
+
+```json
 {"topic":"device00/bme","payload":{"humid":34.49023438,"press":1002.278992,"temp":25.12999916},"qos":0,"retain":false,"_topic":"device00/bme","_msgid":"dac087ca3ee99498"}
+```
+
+さらに、Fuctionノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると、`msg.payload`の中身が、`{"d1":24.88999939,"d2":33.609375,"d3":1002.606628}`になっていることが確認できる。
+
+```json
+{"topic":"device00/bme","payload":{"d1":24.88999939,"d2":33.609375,"d3":1002.606628},"qos":0,"retain":false,"_topic":"device00/bme","_msgid":"455cc565d8af7756"}
 ```
 
 Ambientのダッシュボードにアクセスし、データが送信されていることを確認する。

@@ -205,5 +205,25 @@ void loop() {
 
 `inject` ノード及びダッシュボードのボタンをクリックしてESP32のLEDの点灯することを確認する。
 
+<center>
+    <img src="./images/mqtt-9.png" width="80%">
+</center>
+
+injectノードのボタンをクリックするとdebugノードでのmsgオブジェクト全体の構造は以下のようになっている。
+
+```js
+{"_msgid":"de7576c98a025b30","payload":{"status":0}}
+```
+
+<center>
+    <img src="./images/mqtt-10.png" width="80%">
+</center>
+
+ダッシュボードのボタンをクリックするとdebugノードでもmsgオブジェクト全体の構造は以下のようになっている。
+
+```js
+{"payload":{"status":0},"event":{"clientX":441,"clientY":144,"bbox":[277,173,1243,125]},"socketid":"Z188JdPgZ8hqhLBDAAAB","_msgid":"3d35244e360b8224"}
+```
+
 ## （課題）LEDを点滅させたりPWM制御したり、LEDの数を増やしたりしてみよう。
 
