@@ -393,8 +393,6 @@ msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として
 // デバイスID　デバイスIDは機器ごとにユニークにします
 #define DEVICE_ID "esp001"
 
-#define led 12
-
 // BME280
 BME280 bme;
 BME280_SensorMeasurements measurements;
@@ -517,8 +515,6 @@ void setup() {
 
   // WiFi接続
   setupWiFi();
-
-  pinMode(led, OUTPUT);
 }
 
 void loop() {
@@ -553,12 +549,35 @@ void loop() {
 }
 ```
 
-以下のURL<http://localhost:8080/ui>にアクセスする。
+プログラムをコンパイルし、ESP32に転送を行う
 
-Google Driveを確認する。
+### 動作確認
+
+1. Arduino IDEのシリアルモニタで起動およびデータ取得の確認する．
+
+2. 以下のURL<http://localhost:8080/ui>にアクセスする。
+
+3. GoogleスプレッドシートまたはGoogle Driveを確認する。
 
 ## （課題）観測データをできるだけ集めてスプレッドシートにて、グラフを作成しよう
 
 <center>
     <img src="./images/iot-14.png" width="80%">
 </center>
+
+## （課題）DB Browser for SQLiteを使って、データベースを確認してみよう
+
+DB Browser for SQLite(旧：SQLite Database Browser)は SQLite のデータベースを GUI で管理することができるツールのこと
+
+- DB Browser for SQLiteの[ダウンロード](https://download.sqlitebrowser.org/DB.Browser.for.SQLite-3.12.2-win64.msi)
+
+<center>
+    <img src="./images/iot-24.png" width="80%">
+</center>
+
+- 簡単な手順
+    1. `データベースを開く`ボタンをクリック
+
+    2. `C:\Users\user\Documents\nodered_docker\backup_data\environment.db`を開く
+
+    3. 上記タブを`データ閲覧`に切り替え
