@@ -30,12 +30,12 @@
   - デフォルト
 
 - mqtt out
-
-  msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として、ブローカにパブリッシュする。
-
+  
   - server:`localhost:1883`
   - topic:`deviceXX/status`
   - 画像では，`device01/status`となっている。
+
+  msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として、ブローカにパブリッシュする。
 
 - inject
   
