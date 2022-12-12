@@ -40,12 +40,12 @@
 - 手順
     1. `Create`をクリック
     <center>
-        <img src="./images/ifttt-1.png" width="80%">
+        <img src="./images/ifttt-1.png" width="50%">
     </center>
 
     2. `IF This`のAddをクリックし、`webohok`を選択
     <center>
-        <img src="./images/ifttt-2.png" width="80%">
+        <img src="./images/ifttt-2.png" width="50%">
     </center>
 
     3. Receive a web requestを選択し、Event Nameを`iot_data`にし、Create triggerをクリック
@@ -55,20 +55,20 @@
     5. `Add row to spredsheet`を選択し、以下の図と同様にする。
 
     <center>
-        <img src="./images/iot-3.png" width="80%">
+        <img src="./images/iot-3.png" width="50%">
     </center>
 
     6. Create actionをクリック
 
     7. `Continue`をクリック
     <center>
-        <img src="./images/iot-4.png" width="80%">
+        <img src="./images/iot-4.png" width="50%">
     </center>
 
     8. `Webhooks`のアイコンをクリックし、`Documentation`をクリック
 
     <center>
-        <img src="./images/ifttt-6.png" width="80%">
+        <img src="./images/ifttt-6.png" width="50%">
     </center>
 
     9. `{{event}}`に`iot_data`を入れ、以下のURLをコピーしておく。
@@ -104,7 +104,7 @@
 
     - 名前：`気圧の取り出し（温度、湿度）`
     <center>
-        <img src="./images/iot-5.png" width="80%">
+        <img src="./images/iot-5.png" width="60%">
     </center>
 
 - gauge
@@ -115,7 +115,7 @@
     - ラベル：` 気圧(温度、湿度)`
 
     <center>
-        <img src="./images/iot-15.png" width="80%">
+        <img src="./images/iot-15.png" width="60%">
     </center>
 
 - chart
@@ -128,7 +128,7 @@
     - Lavel：`データクリア`
 
     <center>
-        <img src="./images/iot-16.png" width="80%">
+        <img src="./images/iot-16.png" width="60%">
     </center>
 
 - function
@@ -179,14 +179,14 @@
 
     - 名前：1分毎に更新
     <center>
-        <img src="./images/iot-18.png" width="80%">
+        <img src="./images/iot-18.png" width="60%">
     </center>
 
 - sqlite
 
     - 名前：`DB`
     <center>
-        <img src="./images/iot-17.png" width="80%">
+        <img src="./images/iot-17.png" width="60%">
     </center>
 
 - function
@@ -211,7 +211,7 @@
 - inject
     - 名前：1分毎に更新
     <center>
-        <img src="./images/iot-18.png" width="80%">
+        <img src="./images/iot-18.png" width="60%">
     </center>
 
 - function
@@ -252,24 +252,24 @@
 - change
     - 名前：URLに代入
     <center>
-        <img src="./images/iot-19.png" width="80%">
+        <img src="./images/iot-19.png" width="60%">
     </center>
 
     - 名前：`送信中`
     <center>
-        <img src="./images/iot-10.png" width="80%">
+        <img src="./images/iot-10.png" width="60%">
     </center>
 
     - 名前：`停止中`
     <center>
-        <img src="./images/iot-11.png" width="80%">
+        <img src="./images/iot-11.png" width="60%">
     </center>
 
 - switch
     - 名前：送信判定
     - プロパティ：`global.IFT`
     <center>
-        <img src="./images/iot-20.png" width="80%">
+        <img src="./images/iot-20.png" width="60%">
     </center>
 
 - http request
@@ -282,7 +282,7 @@
     - グループ：` IFTTT制御 `
     - Lavel：`IFTTT送信開始/IFTTT送信終了`
     <center>
-        <img src="./images/iot-9.png" width="80%">
+        <img src="./images/iot-9.png" width="60%">
     </center>
 
 - text
@@ -290,7 +290,7 @@
     - グループ：` IFTTT制御 `
     - Lavel：`IFTTT送信制御`
     <center>
-        <img src="./images/iot-12.png" width="80%">
+        <img src="./images/iot-12.png" width="60%">
     </center>
 
 - debug
@@ -310,7 +310,7 @@ msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として
     - グループ：`LED制御`  
     - Lavel：各`ON/OFF/Blink`
     <center>
-        <img src="./images/iot-21.png" width="80%">
+        <img src="./images/iot-21.png" width="60%">
     </center>
 
 - function
@@ -352,14 +352,14 @@ msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として
     - グループ：`LED状態`  
     - ラベル：LED状態確認
     <center>
-        <img src="./images/iot-22.png" width="80%">
+        <img src="./images/iot-22.png" width="60%">
     </center>
 
 - state-trail
     - Tab：` データロガー `
     - グループ：`LED状態`
     <center>
-        <img src="./images/iot-23.png" width="80%">
+        <img src="./images/iot-23.png" width="60%">
     </center>
 
 `デプロイ` ボタンをクリックしノードを有効化する
