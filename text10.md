@@ -111,6 +111,7 @@
     - Tab：` データロガー `
     - グループ：` 気象情報 `
     - Type：`気圧/Donut, 温度/Gauge, 湿度/Lavel`
+    - Units：`hPa, ℃, %`
     - ラベル：` 気圧(温度、湿度)`
 
     <center>
