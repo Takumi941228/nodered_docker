@@ -157,7 +157,7 @@
     - 名前：グローバル変数に変換(湿度)
     
     ```js
-    global.set("p_data", msg.payload);
+    global.set("h_data", msg.payload);
     return msg;
     ```
 
