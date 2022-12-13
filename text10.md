@@ -163,7 +163,7 @@
     - 名前：テーブル作成
     - msg.topic =
     ```db
-    CREATE TABLE sensordata (time string, temp INTEGER, humid INTCREATE TEGER, press INTEGER);
+    CREATE TABLE sensordata (time string, temp INTEGER, humid INTEGER, press INTEGER);
     ```
 
     - 名前：テーブル削除
