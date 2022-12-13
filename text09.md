@@ -247,7 +247,7 @@ void loop() {
 Arduino IDEのシリアルモニタで起動およびデータ取得の確認する．
 
 <center>
-  <img src="./images/ambient-8.png" width="80%">
+  <img src="./images/ambient-8.png" width="50%">
 </center>
 
 MQTT inノードに接続されたdebugノードで、msgオブジェクトの全体を表示すると以下のような構成になっている。`topic`には、`"devicexx/bmm"`という文字型データ、`payload`には、`{}`で囲まれたJSONデータで構成されている。
