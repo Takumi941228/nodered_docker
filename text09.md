@@ -27,39 +27,42 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
   - <https://ambidata.io/>
 
 - 手順
-  - チャンネル一覧＞チャンネルを作る
+  
+  1. チャンネル一覧＞チャンネルを作る
   <center>
     <img src="./images/ambient-2.png" width="80%">
   </center>
 
-  - 設定＞設定変更
+  2. 設定＞設定変更
   <center>
     <img src="./images/ambient-3.png" width="80%">
   </center>
 
-  - チェンネル名：`ESP32温湿度気圧データロガー`
-  - データ1：`温度`
-  - データ2：`湿度`
-  - データ3：`気圧`
+  3. チャンネルの設定
+      - チェンネル名：`ESP32温湿度気圧データロガー`
+      - データ1：`温度`
+      - データ2：`湿度`
+      - データ3：`気圧`
   <center>
     <img src="./images/ambient-4.png" width="80%">
   </center>
 
-  - チャンネル名`ESP32温湿度気圧データロガー`をクリック
+  4. チャンネル名`ESP32温湿度気圧データロガー`をクリック
   <center>
     <img src="./images/ambient-5.png" width="80%">
   </center>
 
-  - チャンネルデータ設定
+  5. チャンネルデータ設定をクリック
   <center>
     <img src="./images/ambient-6.png" width="80%">
   </center>
 
-  - チャート名：`温湿度データ`
-  - チャートの種類：`折れ線グラフ`
-  - d1:温度：`左軸`
-  - d2:湿度：`右軸`
-  - 軸の最小最大値：`任意`
+  6. データの設定
+      - チャート名：`温湿度データ`
+      - チャートの種類：`折れ線グラフ`
+      - d1:温度：`左軸`
+      - d2:湿度：`右軸`
+      - 軸の最小最大値：`任意`
 
   <center>
     <img src="./images/ambient-7.png" width="80%">

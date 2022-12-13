@@ -35,7 +35,7 @@
 
 ### IFTTTの設定
 
-- 以下のアドレス<https://ifttt.com/explore>にアクセス
+以下のアドレス<https://ifttt.com/explore>にアクセス
 
 - 手順
     1. `Create`をクリック
@@ -134,28 +134,24 @@
 - function
 
     - 名前：チャート用空データを作成
-    
     ```js
     msg.payload = []
     return msg;
     ```
 
     - 名前：グローバル変数に変換(気圧)
-    
     ```js
     global.set("p_data", msg.payload);
     return msg;
     ```
 
     - 名前：グローバル変数に変換(温度)
-    
     ```js
     global.set("t_data", msg.payload);
     return msg;
     ```
 
     - 名前：グローバル変数に変換(湿度)
-    
     ```js
     global.set("h_data", msg.payload);
     return msg;
@@ -164,15 +160,14 @@
 #### ②のフロー
 
 - inject
-
     - 名前：テーブル作成
-    - msg.topic = 
+    - msg.topic =
     ```db
     CREATE TABLE sensordata (time string, temp INTEGER, humid INTCREATE TEGER, press INTEGER);
     ```
 
     - 名前：テーブル削除
-    - msg.topic = 
+    - msg.topic =
     ```db
     DROP TABLE sensordata;
     ```
@@ -183,14 +178,12 @@
     </center>
 
 - sqlite
-
     - 名前：`DB`
     <center>
         <img src="./images/iot-17.png" width="60%">
     </center>
 
 - function
-
     - 名前：データ格納
     ```js
     //グローバル変数をローカル変数に代入
@@ -216,6 +209,8 @@
 
 - function
 
+    GETパラメータ（GET parameter）とは、クライアント側(Webアプリケーション)がWebサーバ側に送信するデータをURLの末尾に特定の形式で表示したものです。リクエストパラメータ（request parameter）ともいう。URLの末尾に「?」マークを付け、続けて「名前=値」の形式で記述されています。値が複数あるときは「&」で区切られています。
+
     - 名前：データ格納
     ```js
     //グローバル変数をローカル変数に代入
@@ -225,7 +220,7 @@
     //ifttt用アドレス(ｘｘｘｘｘの箇所を変更)
     var url = "https://maker.ifttt.com/trigger/iot_data/with/key/ｘｘｘｘｘ"
 
-    //URLに各データ値をvalueに紐づける
+    //各valueとデータ値を紐づけ送信するためのパラメータ作成
     url += "?value1=";
     url += data1;
     url += "&value2=";
@@ -293,9 +288,6 @@
         <img src="./images/iot-12.png" width="60%">
     </center>
 
-- debug
-    - デフォルト
-
 #### ④のフロー
 
 - mqtt out
@@ -361,6 +353,12 @@ msg.topicを`devicexx/status`として、msg.payloadを`{"status":値}`として
     <center>
         <img src="./images/iot-23.png" width="60%">
     </center>
+
+#### 共通のフロー
+
+- debug
+    - デフォルト
+
 
 `デプロイ` ボタンをクリックしノードを有効化する
 
@@ -557,7 +555,17 @@ void loop() {
 
 2. 以下のURL<http://localhost:8080/ui>にアクセスする。
 
+    - ゲージ及びチャートが変化しているか確認
+    - データクリアボタンでチャートの履歴が削除
+    - LED制御ボタンで`ON/OFF/BLINK`が可能
+    - グループ名LED状態のLEDとガントチャートが連動
+
 3. GoogleスプレッドシートまたはGoogle Driveを確認する。
+
+    - IFTTT送信開始ボタンを押す
+    - スプレッドシートにデータが送られていることを確認
+    - IFTTT送信停止ボタンを押す
+    - スプレッドシートにデータが送られなくなることを確認
 
 ## （課題）観測データをできるだけ集めてスプレッドシートにて、グラフを作成しよう
 
