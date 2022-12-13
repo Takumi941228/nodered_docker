@@ -22,9 +22,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
 ### Ambientの設定
 
-以下のアドレスにアクセスし、Ambientのアカウントを作成する。
-
-  - <https://ambidata.io/>
+以下のアドレス<https://ambidata.io/>にアクセスし、Ambientのアカウントを作成する。
 
 - 手順
   
@@ -68,6 +66,8 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
     <img src="./images/ambient-7.png" width="80%">
   </center>
 
+## フローの構築
+
 ### node-red アンビエント機能
 
 `node-red-contrib-ambient` を利用することでAmbientへのデータ送信を容易にすることができる。
@@ -75,8 +75,6 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 ### `node-red-contrib-ambient` ノードの追加
 
 パレットの管理から，ノードを追加を選択して，`node-red-contrib-ambient` を検索し追加を行う
-
-## フローの構築
 
 各ノードの設置内容は以下
 
@@ -110,7 +108,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
 `デプロイ` ボタンをクリックしノードを有効化する
 
-### ESP32をPublisherにして，センサ情報を送信する
+## ESP32をPublisherにして，センサ情報を送信する
 
 以下のコードは，MQTTブローカへBME280センサで取得したデータを送信します．
 
@@ -244,7 +242,7 @@ void loop() {
 ```
 
 プログラムをコンパイルし、ESP32に転送を行う
-### 動作確認
+## 動作確認
 
 Arduino IDEのシリアルモニタで起動およびデータ取得の確認する．
 
