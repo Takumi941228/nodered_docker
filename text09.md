@@ -42,7 +42,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
       - データ2：`湿度`
       - データ3：`気圧`
   <center>
-    <img src="./images/ambient-4.png" width="80%">
+    <img src="./images/ambient-4.png" width="60%">
   </center>
 
   4. チャンネル名`ESP32温湿度気圧データロガー`をクリック
@@ -52,7 +52,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
 
   5. チャンネルデータ設定をクリック
   <center>
-    <img src="./images/ambient-6.png" width="80%">
+    <img src="./images/ambient-6.png" width="60%">
   </center>
 
   6. データの設定
@@ -63,7 +63,7 @@ AmbientはIoTのアイデアをなるべく簡単にプロトタイプするお�
       - 軸の最小最大値：`任意`
 
   <center>
-    <img src="./images/ambient-7.png" width="80%">
+    <img src="./images/ambient-7.png" width="60%">
   </center>
 
 ## フローの構築
